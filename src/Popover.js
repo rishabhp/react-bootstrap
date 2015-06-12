@@ -2,8 +2,11 @@ import React from 'react';
 import classNames from 'classnames';
 import BootstrapMixin from './BootstrapMixin';
 import FadeMixin from './FadeMixin';
+import createOverlay from './CreateOverlay';
+import createPositionedComponent from './utils/createPositionedComponent';
 
 const Popover = React.createClass({
+
   mixins: [BootstrapMixin, FadeMixin],
 
   propTypes: {
@@ -65,4 +68,14 @@ const Popover = React.createClass({
   }
 });
 
-export default Popover;
+const PositionedPopover = createPositionedComponent(Popover);
+
+const OverlayPopover = createOverlay((props, container) =>
+  <PositionedPopover container={container} {...props}>
+    { props.children }
+  </PositionedPopover>
+);
+
+OverlayPopover.PopoverMarkup = PositionedPopover;
+
+export default OverlayPopover;

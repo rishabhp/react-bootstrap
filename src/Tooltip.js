@@ -2,20 +2,26 @@ import React from 'react';
 import classNames from 'classnames';
 import BootstrapMixin from './BootstrapMixin';
 import FadeMixin from './FadeMixin';
+import createOverlay from './CreateOverlay';
+import createPositionedComponent from './utils/createPositionedComponent';
 
 const Tooltip = React.createClass({
   mixins: [BootstrapMixin, FadeMixin],
 
   propTypes: {
+
     placement: React.PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
     positionLeft: React.PropTypes.number,
     positionTop: React.PropTypes.number,
+
     arrowOffsetLeft: React.PropTypes.oneOfType([
       React.PropTypes.number, React.PropTypes.string
     ]),
+
     arrowOffsetTop: React.PropTypes.oneOfType([
       React.PropTypes.number, React.PropTypes.string
     ]),
+
     animation: React.PropTypes.bool
   },
 
@@ -56,4 +62,14 @@ const Tooltip = React.createClass({
   }
 });
 
-export default Tooltip;
+const PositionedTooltip = createPositionedComponent(Tooltip);
+
+const OverlayTooltip = createOverlay((props, container) =>
+  <PositionedTooltip container={container} {...props}>
+    { props.children }
+  </PositionedTooltip>
+);
+
+OverlayTooltip.TooltipMarkup = PositionedTooltip;
+
+export default OverlayTooltip;
