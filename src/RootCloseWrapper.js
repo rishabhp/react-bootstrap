@@ -26,7 +26,9 @@ export default class RootCloseWrapper extends React.Component {
     // If the click originated from within this component, don't do anything.
     // e.srcElement is required for IE8 as e.target is undefined
     let target = e.target || e.srcElement;
-    if (domUtils.contains(React.findDOMNode(this), target)) {
+    let root = React.findDOMNode(this);
+
+    if (!root || domUtils.contains(React.findDOMNode(this), target)) {
       return;
     }
 
