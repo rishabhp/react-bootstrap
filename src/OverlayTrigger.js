@@ -25,12 +25,16 @@ const OverlayTrigger = React.createClass({
       React.PropTypes.arrayOf(React.PropTypes.oneOf(['click', 'hover', 'focus']))
     ]),
     placement: React.PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
+
     delay: React.PropTypes.number,
     delayShow: React.PropTypes.number,
     delayHide: React.PropTypes.number,
+
     defaultOverlayShown: React.PropTypes.bool,
-    overlay: React.PropTypes.node.isRequired,
     overlay: React.PropTypes.oneOfType([
+      React.PropTypes.func,
+      React.PropTypes.node
+    ]),
     containerPadding: React.PropTypes.number,
     rootClose: React.PropTypes.bool
   },
@@ -66,19 +70,38 @@ const OverlayTrigger = React.createClass({
     if (this.state.isOverlayShown) {
       this.hide();
     } else {
-     this.show();
+      this.show();
     }
   },
 
-  renderOverlay() {
-    if (!this.state.isOverlayShown) {
-      return <span />;
-    }
+  componentDidMount(){
+    this._overlay = document.createElement('div');
+    React.render(this.getOverlay(), this._overlay);
+  },
 
+  componentWillUnmount() {
+    React.unmountComponentAtNode(this._overlay);
+    this._overlay = null;
+    clearTimeout(this._hoverDelay);
+  },
 
+  componentDidUpdate(){
+    React.render(this.getOverlay(), this._overlay);
+  },
+
+  getOverlay(){
+    let overlay = this.props.overlay;
+
+    if ( typeof overlay === 'function'){
+      overlay = overlay(this.state.isOverlayShown, this.hide);
     } else {
-      return overlay;
+      overlay = cloneElement(overlay, {
+        show: this.state.isOverlayShown,
+        onHide: createChainedFunction(this.hide, overlay.props.onHide)
+      });
     }
+
+    return overlay;
   },
 
   render() {
@@ -112,10 +135,6 @@ const OverlayTrigger = React.createClass({
     );
   },
 
-  componentWillUnmount() {
-    clearTimeout(this._hoverDelay);
-  },
-
   handleDelayedShow() {
     if (this._hoverDelay != null) {
       clearTimeout(this._hoverDelay);
@@ -131,10 +150,10 @@ const OverlayTrigger = React.createClass({
       return;
     }
 
-    this._hoverDelay = setTimeout(function() {
+    this._hoverDelay = setTimeout(() => {
       this._hoverDelay = null;
       this.show();
-    }.bind(this), delay);
+    }, delay);
   },
 
   handleDelayedHide() {
@@ -152,10 +171,10 @@ const OverlayTrigger = React.createClass({
       return;
     }
 
-    this._hoverDelay = setTimeout(function() {
+    this._hoverDelay = setTimeout(() => {
       this._hoverDelay = null;
       this.hide();
-    }.bind(this), delay);
+    }, delay);
   }
 
 });
