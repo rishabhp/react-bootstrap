@@ -1,17 +1,17 @@
 const positionerInstance = (
   <ButtonToolbar>
-    <OverlayTrigger placement='left' overlay={<Tooltip><strong>Holy guacamole!</strong> Check this info.</Tooltip>}>
+    <TooltipTrigger placement='left' tooltip={[<strong>Holy guacamole!</strong>, 'Check this info.']}>
       <Button bsStyle='default'>Holy guacamole!</Button>
-    </OverlayTrigger>
-    <OverlayTrigger placement='top' overlay={<Tooltip><strong>Holy guacamole!</strong> Check this info.</Tooltip>}>
+    </TooltipTrigger>
+    <TooltipTrigger placement='top' tooltip={[<strong>Holy guacamole!</strong>, 'Check this info.']}>
       <Button bsStyle='default'>Holy guacamole!</Button>
-    </OverlayTrigger>
-    <OverlayTrigger placement='bottom' overlay={<Tooltip><strong>Holy guacamole!</strong> Check this info.</Tooltip>}>
+    </TooltipTrigger>
+    <TooltipTrigger placement='bottom' tooltip={[<strong>Holy guacamole!</strong>, 'Check this info.']}>
       <Button bsStyle='default'>Holy guacamole!</Button>
-    </OverlayTrigger>
-    <OverlayTrigger placement='right' overlay={<Tooltip><strong>Holy guacamole!</strong> Check this info.</Tooltip>}>
+    </TooltipTrigger>
+    <TooltipTrigger placement='right' tooltip={[<strong>Holy guacamole!</strong>, 'Check this info.']}>
       <Button bsStyle='default'>Holy guacamole!</Button>
-    </OverlayTrigger>
+    </TooltipTrigger>
   </ButtonToolbar>
 );
 

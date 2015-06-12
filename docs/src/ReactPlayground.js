@@ -36,6 +36,7 @@ import * as modPagination from '../../src/Pagination';
 import * as modPanel from '../../src/Panel';
 import * as modPanelGroup from '../../src/PanelGroup';
 import * as modPopover from '../../src/Popover';
+import * as modPopoverTrigger from '../../src/PopoverTrigger';
 import * as modProgressBar from '../../src/ProgressBar';
 import * as modRow from '../../src/Row';
 import * as modSplitButton from '../../src/SplitButton';
@@ -44,6 +45,7 @@ import * as modTable from '../../src/Table';
 import * as modTabPane from '../../src/TabPane';
 import * as modThumbnail from '../../src/Thumbnail';
 import * as modTooltip from '../../src/Tooltip';
+import * as modTooltipTrigger from '../../src/TooltipTrigger';
 import * as modWell from '../../src/Well';
 
 import babel from 'babel-core/browser';
@@ -89,6 +91,7 @@ const Pager = modPager.default;
 const Panel = modPanel.default;
 const PanelGroup = modPanelGroup.default;
 const Popover = modPopover.default;
+const PopoverTrigger = modPopoverTrigger.default;
 const ProgressBar = modProgressBar.default;
 const Row = modRow.default;
 const SplitButton = modSplitButton.default;
@@ -97,6 +100,7 @@ const Table = modTable.default;
 const TabPane = modTabPane.default;
 const Thumbnail = modThumbnail.default;
 const Tooltip = modTooltip.default;
+const TooltipTrigger = modTooltipTrigger.default;
 const Well = modWell.default;
 /* eslint-enable */
 
