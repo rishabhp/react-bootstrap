@@ -1,5 +1,5 @@
 import React, { cloneElement } from 'react';
-
+import Portal from './Portal';
 import createChainedFunction from './utils/createChainedFunction';
 import createContextWrapper from './utils/createContextWrapper';
 
@@ -101,7 +101,11 @@ const OverlayTrigger = React.createClass({
       });
     }
 
-    return overlay;
+    return (
+      <Portal show={this.state.isOverlayShown} onHide={this.hide}>
+        { overlay }
+      </Portal>
+    );
   },
 
   render() {

@@ -48,9 +48,13 @@ import * as modTooltip from '../../src/Tooltip';
 import * as modTooltipTrigger from '../../src/TooltipTrigger';
 import * as modWell from '../../src/Well';
 
+import * as modPortal from '../../src/Portal';
+
 import babel from 'babel-core/browser';
 
 import CodeExample from './CodeExample';
+
+const Portal = modPortal.default;
 
 const classNames = modClassNames.default;
 /* eslint-disable */
