@@ -2,7 +2,6 @@ import React from 'react';
 import classNames from 'classnames';
 import BootstrapMixin from './BootstrapMixin';
 import FadeMixin from './FadeMixin';
-import createOverlay from './CreateOverlay';
 import createPositionedComponent from './utils/createPositionedComponent';
 
 const Popover = React.createClass({
@@ -51,7 +50,7 @@ const Popover = React.createClass({
     };
 
     return (
-      <div {...this.props} className={classNames(this.props.className, classes)} style={style} title={null}>
+      <div role='tooltip' {...this.props} className={classNames(this.props.className, classes)} style={style} title={null}>
         <div className="arrow" style={arrowStyle} />
         {this.props.title ? this.renderTitle() : null}
         <div className="popover-content">
@@ -70,12 +69,6 @@ const Popover = React.createClass({
 
 const PositionedPopover = createPositionedComponent(Popover);
 
-const OverlayPopover = createOverlay((props, container) =>
-  <PositionedPopover container={container} {...props}>
-    { props.children }
-  </PositionedPopover>
-);
+PositionedPopover.PopoverMarkup = Popover;
 
-OverlayPopover.PopoverMarkup = PositionedPopover;
-
-export default OverlayPopover;
+export default PositionedPopover;

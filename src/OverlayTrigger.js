@@ -2,7 +2,9 @@ import React, { cloneElement } from 'react';
 import Portal from './Portal';
 import createChainedFunction from './utils/createChainedFunction';
 import createContextWrapper from './utils/createContextWrapper';
+import CustomPropTypes from './utils/CustomPropTypes';
 
+import warning from 'react/lib/warning'; // better option?
 /**
  * Check if value one is inside or equal to the of value
  *
@@ -24,26 +26,26 @@ const OverlayTrigger = React.createClass({
       React.PropTypes.oneOf(['manual', 'click', 'hover', 'focus']),
       React.PropTypes.arrayOf(React.PropTypes.oneOf(['click', 'hover', 'focus']))
     ]),
-    placement: React.PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
 
     delay: React.PropTypes.number,
     delayShow: React.PropTypes.number,
     delayHide: React.PropTypes.number,
 
     defaultOverlayShown: React.PropTypes.bool,
-    overlay: React.PropTypes.oneOfType([
-      React.PropTypes.func,
-      React.PropTypes.node
-    ]),
+    overlay: React.PropTypes.node,
+
+    //- depreciated ---
+    container: CustomPropTypes.mountable,
     containerPadding: React.PropTypes.number,
+    placement: React.PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
+    //---
+
     rootClose: React.PropTypes.bool
   },
 
   getDefaultProps() {
     return {
-      placement: 'right',
-      trigger: ['hover', 'focus'],
-      containerPadding: 0
+      trigger: ['hover', 'focus']
     };
   },
 
@@ -92,49 +94,61 @@ const OverlayTrigger = React.createClass({
   getOverlay(){
     let overlay = this.props.overlay;
 
-    if ( typeof overlay === 'function'){
-      overlay = overlay(this.state.isOverlayShown, this.hide);
-    } else {
-      overlay = cloneElement(overlay, {
-        show: this.state.isOverlayShown,
-        onHide: createChainedFunction(this.hide, overlay.props.onHide)
-      });
-    }
+    warning(this.props.containerPadding == null && this.props.placement == null,
+      '[react-bootstrap] `containerPadding` and `placement` props are depreciated for OverlayTrigger. ' +
+      'Please add these props directly to your Tooltip or Popover elements');
+
+    overlay = cloneElement(overlay, {
+      target:    ()=> React.findDOMNode(this),
+      placement: overlay.props.placement || this.props.placement,
+      container: overlay.props.container || this.props.container,
+      containerPadding: overlay.props.containerPadding || this.props.containerPadding
+    });
 
     return (
-      <Portal show={this.state.isOverlayShown} onHide={this.hide}>
+      <Portal
+        container={this.props.container}
+        show={this.state.isOverlayShown}
+        onHide={this.hide}
+      >
         { overlay }
       </Portal>
     );
   },
 
   render() {
-    const child = React.Children.only(this.props.children);
+    const trigger = React.Children.only(this.props.children);
 
-    if (this.props.trigger === 'manual') {
-      return child;
-    }
+    const props = {
+      'aria-describedby': this.props.overlay.props.id // ARIA: generate ID?
+    };
 
-    const props = {};
+    // what does this even mean?
+    if (this.props.trigger !== 'manual') {
 
-    props.onClick = createChainedFunction(child.props.onClick, this.props.onClick);
+      props.onClick = createChainedFunction(trigger.props.onClick, this.props.onClick);
 
-    if (isOneOf('click', this.props.trigger)) {
-      props.onClick = createChainedFunction(this.toggle, props.onClick);
-    }
+      if (isOneOf('click', this.props.trigger)) {
+        props.onClick = createChainedFunction(this.toggle, props.onClick);
+      }
 
-    if (isOneOf('hover', this.props.trigger)) {
-      props.onMouseOver = createChainedFunction(this.handleDelayedShow, this.props.onMouseOver);
-      props.onMouseOut = createChainedFunction(this.handleDelayedHide, this.props.onMouseOut);
-    }
+      if (isOneOf('hover', this.props.trigger)) {
+        warning(!(this.props.trigger === 'hover'),
+          '[react-bootstrap] Specifying only the `"hover"` trigger limits the visibilty of the overlay to just mouse users. ' +
+          'Consider also including the `"focus"` trigger so that touch and keyboard only users can see the overlay as well.');
 
-    if (isOneOf('focus', this.props.trigger)) {
-      props.onFocus = createChainedFunction(this.handleDelayedShow, this.props.onFocus);
-      props.onBlur = createChainedFunction(this.handleDelayedHide, this.props.onBlur);
+        props.onMouseOver = createChainedFunction(this.handleDelayedShow, this.props.onMouseOver);
+        props.onMouseOut = createChainedFunction(this.handleDelayedHide, this.props.onMouseOut);
+      }
+
+      if (isOneOf('focus', this.props.trigger)) {
+        props.onFocus = createChainedFunction(this.handleDelayedShow, this.props.onFocus);
+        props.onBlur = createChainedFunction(this.handleDelayedHide, this.props.onBlur);
+      }
     }
 
     return cloneElement(
-      child,
+      trigger,
       props
     );
   },

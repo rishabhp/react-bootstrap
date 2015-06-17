@@ -51,7 +51,7 @@ const Tooltip = React.createClass({
     };
 
     return (
-        <div {...this.props} className={classNames(this.props.className, classes)} style={style}>
+        <div role='tooltip' {...this.props} className={classNames(this.props.className, classes)} style={style}>
           <div className="tooltip-arrow" style={arrowStyle} />
           <div className="tooltip-inner">
             {this.props.children}
@@ -63,11 +63,6 @@ const Tooltip = React.createClass({
 
 const PositionedTooltip = createPositionedComponent(Tooltip);
 
-// const OverlayTooltip = createOverlay((props, container) =>
-//   <PositionedTooltip container={container} {...props}>
-//     { props.children }
-//   </PositionedTooltip>
-// );
 
 PositionedTooltip.TooltipMarkup = Tooltip;
 
