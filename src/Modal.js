@@ -7,6 +7,7 @@ import FadeMixin from './FadeMixin';
 import domUtils from './utils/domUtils';
 import EventListener from './utils/EventListener';
 
+import Portal from './Portal';
 
 import Body from './ModalBody';
 import Header from './ModalHeader';
@@ -32,6 +33,17 @@ function containerClientHeight(container, context) {
 function getContainer(context){
   return (context.props.container && React.findDOMNode(context.props.container)) ||
     domUtils.ownerDocument(context).body;
+}
+
+function requiredIfNot(key, type){
+  return function(props, propName, componentName){
+    let propType = type;
+
+    if ( props[ key] === undefined ){
+      propType = propType.isRequired;
+    }
+    return propType(props, propName, componentName);
+  };
 }
 
 function toChildArray(children){
@@ -89,7 +101,7 @@ const Modal = React.createClass({
     keyboard: React.PropTypes.bool,
     closeButton: React.PropTypes.bool,
     animation: React.PropTypes.bool,
-    onHide: React.PropTypes.func.isRequired,
+    onHide: requiredIfNot('onRequestHide', React.PropTypes.func),
     dialogClassName: React.PropTypes.string,
     enforceFocus: React.PropTypes.bool
   },
@@ -149,8 +161,8 @@ const Modal = React.createClass({
     let children = toChildArray(this.props.children); // b/c createFragment is in addons and children can be a key'd object
     let hasNewHeader = children.some( c => c.type.__isModalHeader);
 
-    if (!hasNewHeader && this.props.closeButton || this.props.title != null){
-      warning(false, 'Specifing `closeButton` or `title` props on a Modal is depreciated. ' +
+    if (!hasNewHeader && this.props.title != null){
+      warning(false, 'Specifying `closeButton` or `title` props on a Modal is depreciated. ' +
         'Please use the new ModalHeader, and ModalTitle components instead');
 
       children.unshift(
@@ -334,9 +346,37 @@ const Modal = React.createClass({
   }
 });
 
-Modal.Body = Body;
-Modal.Header = Header;
-Modal.Title = Title;
-Modal.Footer = Footer;
+const ModalOverlay = React.createClass({
+  propTypes: {
+    ...Portal.propTypes
+  },
 
-export default Modal;
+  defaultProps: {
+    show: null
+  },
+
+  render() {
+    let { show, ...props } = this.props;
+
+    let modal = (
+      <Modal {...props}>{this.props.children}</Modal>
+    );
+    // I can't think of another way to not break back compat while defaulting container
+    if ( show != null ){
+      return (
+        <Portal show={show} container={props.container} >
+          { modal }
+        </Portal>
+      );
+    } else {
+      return modal;
+    }
+  }
+});
+
+ModalOverlay.Body = Body;
+ModalOverlay.Header = Header;
+ModalOverlay.Title = Title;
+ModalOverlay.Footer = Footer;
+
+export default ModalOverlay;
