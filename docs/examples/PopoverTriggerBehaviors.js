@@ -1,17 +1,17 @@
 const positionerInstance = (
   <ButtonToolbar>
-  <PopoverTrigger trigger='click' placement='bottom' title='Popover bottom' popover={[<strong>Holy guacamole!</strong>, ' Check this info.']}>
+    <OverlayTrigger trigger='click' placement='bottom' overlay={<Popover title='Popover bottom'><strong>Holy guacamole!</strong> Check this info.</Popover>}>
       <Button bsStyle='default'>Click</Button>
-    </PopoverTrigger>
-    <PopoverTrigger trigger='hover' placement='bottom' title='Popover bottom' popover={[<strong>Holy guacamole!</strong>, ' Check this info.']}>
+    </OverlayTrigger>
+    <OverlayTrigger trigger='hover' placement='bottom' overlay={<Popover title='Popover bottom'><strong>Holy guacamole!</strong> Check this info.</Popover>}>
       <Button bsStyle='default'>Hover</Button>
-    </PopoverTrigger>
-    <PopoverTrigger trigger='focus' placement='bottom' title='Popover bottom' popover={[<strong>Holy guacamole!</strong>, ' Check this info.']}>
+    </OverlayTrigger>
+    <OverlayTrigger trigger='focus' placement='bottom' overlay={<Popover title='Popover bottom'><strong>Holy guacamole!</strong> Check this info.</Popover>}>
       <Button bsStyle='default'>Focus</Button>
-    </PopoverTrigger>
-    <PopoverTrigger trigger='click' rootClose placement='bottom' title='Popover bottom' popover={[<strong>Holy guacamole!</strong>, ' Check this info.']}>
+    </OverlayTrigger>
+    <OverlayTrigger trigger='click' rootClose={true} placement='bottom' overlay={<Popover title='Popover bottom'><strong>Holy guacamole!</strong> Check this info.</Popover>}>
       <Button bsStyle='default'>Click + rootClose</Button>
-    </PopoverTrigger>
+    </OverlayTrigger>
   </ButtonToolbar>
 );
 
