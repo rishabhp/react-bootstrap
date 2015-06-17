@@ -23,7 +23,7 @@ let Portal = React.createClass({
 
     let tooltip = React.Children.only(this.props.children);
 
-    if ( this.props.rootClose ){
+    if (this.props.rootClose) {
       return (
         <RootCloseWrapper onRootClose={this.props.onHide}>
           { tooltip }

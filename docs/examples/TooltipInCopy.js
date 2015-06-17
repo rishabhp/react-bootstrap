@@ -1,9 +1,11 @@
 const LinkWithTooltip = React.createClass({
   render() {
+    let tooltip = <Tooltip placement='top'>{this.props.tooltip}</Tooltip>;
+
     return (
-      <TooltipTrigger placement='top' tooltip={this.props.tooltip} delayShow={300} delayHide={150}>
+      <OverlayTrigger overlay={tooltip} delayShow={300} delayHide={150}>
         <a href={this.props.href}>{this.props.children}</a>
-      </TooltipTrigger>
+      </OverlayTrigger>
     );
   }
 });

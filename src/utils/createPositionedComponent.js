@@ -155,8 +155,8 @@ let createPositionedComponent = Component => {
         return;
       }
 
-      let target = React.findDOMNode(this.props.target(this.props))
-        , container = React.findDOMNode(this.props.container);
+      let target = React.findDOMNode(this.props.target(this.props));
+      let container = React.findDOMNode(this.props.container) || domUtils.ownerDocument(this).body;
 
       this.setState(
         calcOverlayPosition(
@@ -173,6 +173,11 @@ let createPositionedComponent = Component => {
     container:        CustomPropTypes.mountable,
     containerPadding: React.PropTypes.number,
     placement:        React.PropTypes.oneOf(['top', 'right', 'bottom', 'left'])
+  };
+
+  PositionedComponent.defaultProps = {
+    containerPadding: 0,
+    placement:        'right'
   };
 
   return PositionedComponent;
