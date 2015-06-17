@@ -6,7 +6,7 @@ beforeEach(function() {
 
 afterEach(function() {
   if (typeof console.warn.restore === 'function') {
-    assert(!console.warn.called, () => {
+    assert(console.warn.handled || !console.warn.called, () => {
       return `${console.warn.getCall(0).args[0]} \nIn '${this.currentTest.fullTitle()}'`;
     });
     console.warn.restore();

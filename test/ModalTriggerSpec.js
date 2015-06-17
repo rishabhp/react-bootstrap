@@ -2,7 +2,30 @@ import React from 'react';
 import ReactTestUtils from 'react/lib/ReactTestUtils';
 import ModalTrigger from '../src/ModalTrigger';
 
+function checkForWarning(msg){
+  let warning = console.warn.getCall(0).args[0];
+  assert.ok(warning.indexOf(msg) !== -1, 'No Such warning: "' + warning + '"');
+  console.warn.handled = true;
+}
+
 describe('ModalTrigger', function() {
+
+  afterEach(()=> {
+    if ( console.warn.called ){
+      checkForWarning('Warning: The `ModalTrigger` component has been depreciated');
+    }
+  });
+
+  it('Should warn about depreciated Component', function() {
+    ReactTestUtils.renderIntoDocument(
+      <ModalTrigger modal={<div>test</div>}>
+        <button>button</button>
+      </ModalTrigger>
+    );
+
+    checkForWarning('Warning: The `ModalTrigger` component has been depreciated');
+  });
+
   it('Should create ModalTrigger element', function() {
     const instance = ReactTestUtils.renderIntoDocument(
       <ModalTrigger modal={<div>test</div>}>
