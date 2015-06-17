@@ -1,11 +1,12 @@
 import React, { cloneElement } from 'react';
-import warning from 'react/lib/warning';
+
 import classNames from 'classnames';
 import createChainedFunction from './utils/createChainedFunction';
 import BootstrapMixin from './BootstrapMixin';
 import FadeMixin from './FadeMixin';
 import domUtils from './utils/domUtils';
 import EventListener from './utils/EventListener';
+import deprecationWarning from './utils/deprecationWarning';
 
 import Portal from './Portal';
 
@@ -162,8 +163,9 @@ const Modal = React.createClass({
     let hasNewHeader = children.some( c => c.type.__isModalHeader);
 
     if (!hasNewHeader && this.props.title != null){
-      warning(false, 'Specifying `closeButton` or `title` props on a Modal is depreciated. ' +
-        'Please use the new ModalHeader, and ModalTitle components instead');
+      deprecationWarning(
+        'Specifying `closeButton` or `title` Modal props',
+        'the new Modal.Header, and Modal.Title components');
 
       children.unshift(
         <Header closeButton={this.props.closeButton} onHide={this._getHide()}>
@@ -204,8 +206,9 @@ const Modal = React.createClass({
   },
 
   _getHide(){
-    warning(!(!this.props.onHide && this.props.onRequestHide),
-      'The Modal prop `onRequestHide` has been renamed to `onHide`. `onRequestHide` will be removed in a future version');
+    if ( !this.props.onHide && this.props.onRequestHide){
+      deprecationWarning('The Modal prop `onRequestHide`', 'the `onHide` prop');
+    }
 
     return this.props.onHide || this.props.onRequestHide;
   },

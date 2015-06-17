@@ -1,14 +1,15 @@
 import React, { cloneElement } from 'react';
-import warning from 'react/lib/warning';
-import OverlayMixin from './OverlayMixin';
+
+import deprecationWarning from './utils/deprecationWarning';
 
 import createChainedFunction from './utils/createChainedFunction';
 import createContextWrapper from './utils/createContextWrapper';
 
 function createHideDepreciationWrapper(hide){
   return function(...args){
-    warning(false,
-      'The Modal prop `onRequestHide` has been renamed to `onHide`. `onRequestHide` will be removed in a future version');
+    deprecationWarning(
+        'The Modal prop `onRequestHide`', 'the `onHide` prop');
+
     return hide(...args);
   };
 }
@@ -104,8 +105,9 @@ ModalTrigger.withContext = createContextWrapper(ModalTrigger, 'modal');
 
 let DepreciatedModalTrigger = React.createClass({
   componentWillMount(){
-    warning(false, 'The `ModalTrigger` component has been depreciated. Please see the new examples at: ' +
-     'http://react-bootstrap.github.io/components.html#modals');
+    deprecationWarning(
+        'The `ModalTrigger` component', 'Please see the new examples'
+      , 'http://react-bootstrap.github.io/components.html#modals');
   },
 
   render(){

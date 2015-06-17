@@ -1,11 +1,7 @@
 import React from 'react';
 import ReactTestUtils from 'react/lib/ReactTestUtils';
 import Modal from '../src/Modal';
-
-function checkForWarning(msg){
-  assert.ok(console.warn.calledWith(msg), console.warn.getCall(0).args[0]);
-  console.warn.handled = true;
-}
+import { shouldWarn } from './helpers';
 
 describe('Modal', function () {
 
@@ -192,7 +188,7 @@ describe('Modal', function () {
   });
 
 
-  describe('depreciations', function(){
+  describe('deprecations', function(){
     it('Should render the modal header and title', function() {
       let instance = ReactTestUtils.renderIntoDocument(
         <Modal title='hello' onHide={()=>{}}>
@@ -206,8 +202,8 @@ describe('Modal', function () {
         ReactTestUtils.findRenderedComponentWithType(instance, Modal.Title);
       }).should.not.throw();
 
-      checkForWarning(
-        'Warning: Specifying `closeButton` or `title` props on a Modal is depreciated. Please use the new ModalHeader, and ModalTitle components instead');
+      shouldWarn(
+        'Specifying `closeButton` or `title` Modal props is deprecated');
     });
 
     it('Should warn about onRequestHide', function() {
@@ -217,8 +213,7 @@ describe('Modal', function () {
         </Modal>
       );
 
-      checkForWarning(
-        'Warning: The Modal prop `onRequestHide` has been renamed to `onHide`. `onRequestHide` will be removed in a future version');
+      shouldWarn('The Modal prop `onRequestHide` is deprecated');
     });
   });
 });
