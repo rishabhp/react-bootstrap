@@ -233,17 +233,29 @@ const ComponentsPage = React.createClass({
                   <h1 id='modals' className='page-header'>Modals <small>Modal</small></h1>
 
                   <h3 id='modals-static'>A static example</h3>
-                  <p>A rendered modal with header, body, and set of actions in the footer.</p>
-                  <p>The header is added automatically if you pass in a <code>title</code> prop.</p>
+                  <p>
+                    A rendered modal with header, body, and set of actions in the footer. The <code>{'<Modal/>'}</code> Component comes with
+                    a few convenient "sub components": <code>{'<Modal.Header/>'}</code>, <code>{'<Modal.Title/>'}</code>, <code>{'<Modal.Body/>'}</code>,
+                    and <code>{'<Modal.Footer/>'}</code>, which you can use to build the Modal content.
+                  </p>
+                  <div className='bs-callout bs-callout-info'>
+                    <h4>Additional Import Options</h4>
+                    <p>
+                      The Modal Header, Title, Body, and Footer components are available as static properties the <code>{'<Modal/>'}</code> component, but you can also,
+                      import them directly from the <code>/lib</code> directory like: <code>{"require('react-bootstrap/lib/ModalHeader')"}</code>.
+                    </p>
+                  </div>
                   <ReactPlayground codeText={Samples.ModalStatic} />
 
                   <h3 id='modals-live'>Live demo</h3>
-                  <p>Use <code>&lt;ModalTrigger /&gt;</code> to create a real modal that's added to the document body when opened.</p>
+                  <p>Use <code>{'<Modal/>'}</code> in combination with other components to show or hide your Modal.</p>
                   <ReactPlayground codeText={Samples.ModalTrigger} />
 
+                  {/*
                   <h3 id='modals-custom'>Custom trigger</h3>
                   <p>Use <code>OverlayMixin</code> in a custom component to manage the modal's state yourself.</p>
                   <ReactPlayground codeText={Samples.ModalOverlayMixin} />
+                  */}
 
                   <h3 id='modals-custom'>Contained Modal</h3>
                   <p>You will need to add the following css to your project and ensure that your container has the <code>modal-container</code> class.</p>
