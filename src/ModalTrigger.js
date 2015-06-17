@@ -1,8 +1,17 @@
 import React, { cloneElement } from 'react';
+import warning from 'react/lib/warning';
 import OverlayMixin from './OverlayMixin';
 
 import createChainedFunction from './utils/createChainedFunction';
 import createContextWrapper from './utils/createContextWrapper';
+
+function createHideDepreciationWrapper(hide){
+  return function(...args){
+    warning(false,
+      'The Modal prop `onRequestHide` has been renamed to `onHide`. `onRequestHide` will be removed in a future version');
+    return hide(...args);
+  };
+}
 
 const ModalTrigger = React.createClass({
   mixins: [OverlayMixin],
@@ -43,7 +52,8 @@ const ModalTrigger = React.createClass({
     return cloneElement(
       this.props.modal,
       {
-        onRequestHide: this.hide
+        onHide: this.hide,
+        onRequestHide: createHideDepreciationWrapper(this.hide)
       }
     );
   },

@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { cloneElement } from 'react';
+import warning from 'react/lib/warning';
 import classNames from 'classnames';
+import createChainedFunction from './utils/createChainedFunction';
 import BootstrapMixin from './BootstrapMixin';
 import FadeMixin from './FadeMixin';
 import domUtils from './utils/domUtils';
 import EventListener from './utils/EventListener';
 
 
-// TODO:
-// - aria-labelledby
-// - Add `modal-body` div if only one child passed in that doesn't already have it
-// - Tests
+import Body from './ModalBody';
+import Header from './ModalHeader';
+import Title from './ModalTitle';
+import Footer from './ModalFooter';
+
 
 /**
  * Gets the correct clientHeight of the modal container
@@ -31,6 +34,11 @@ function getContainer(context){
     domUtils.ownerDocument(context).body;
 }
 
+function toChildArray(children){
+  let result = [];
+  React.Children.forEach(children, c => result.push(c));
+  return result;
+}
 /**
  * Firefox doesn't have a focusin event so using capture is easiest way to get bubbling
  * IE8 can't do addEventListener, but does have onfocusin, so we use that in ie8
@@ -81,7 +89,7 @@ const Modal = React.createClass({
     keyboard: React.PropTypes.bool,
     closeButton: React.PropTypes.bool,
     animation: React.PropTypes.bool,
-    onRequestHide: React.PropTypes.func.isRequired,
+    onHide: React.PropTypes.func.isRequired,
     dialogClassName: React.PropTypes.string,
     enforceFocus: React.PropTypes.bool
   },
@@ -127,8 +135,7 @@ const Modal = React.createClass({
         ref="modal">
         <div className={classNames(this.props.dialogClassName, dialogClasses)}>
           <div className="modal-content">
-            {this.props.title ? this.renderHeader() : null}
-            {this.props.children}
+            { this.renderContent() }
           </div>
         </div>
       </div>
@@ -136,6 +143,34 @@ const Modal = React.createClass({
 
     return this.props.backdrop ?
       this.renderBackdrop(modal, state.backdropStyles) : modal;
+  },
+
+  renderContent() {
+    let children = toChildArray(this.props.children); // b/c createFragment is in addons and children can be a key'd object
+    let hasNewHeader = children.some( c => c.type.__isModalHeader);
+
+    if (!hasNewHeader && this.props.closeButton || this.props.title != null){
+      warning(false, 'Specifing `closeButton` or `title` props on a Modal is depreciated. ' +
+        'Please use the new ModalHeader, and ModalTitle components instead');
+
+      children.unshift(
+        <Header closeButton={this.props.closeButton} onHide={this._getHide()}>
+          { this.props.title &&
+            <Title>{this.props.title}</Title>
+          }
+        </Header>
+      );
+    }
+
+    return React.Children.map(children, child => {
+      // TODO: use context in 0.14
+      if (child.type.__isModalHeader) {
+        return cloneElement(child, {
+          onHide: createChainedFunction(this._getHide(), child.props.onHide)
+        });
+      }
+      return child;
+    });
   },
 
   renderBackdrop(modal) {
@@ -156,27 +191,11 @@ const Modal = React.createClass({
     );
   },
 
-  renderHeader() {
-    let closeButton;
-    if (this.props.closeButton) {
-      closeButton = (
-        <button type="button" className="close" aria-hidden="true" onClick={this.props.onRequestHide}>&times;</button>
-      );
-    }
+  _getHide(){
+    warning(!(!this.props.onHide && this.props.onRequestHide),
+      'The Modal prop `onRequestHide` has been renamed to `onHide`. `onRequestHide` will be removed in a future version');
 
-    return (
-      <div className="modal-header">
-        {closeButton}
-        {this.renderTitle()}
-      </div>
-    );
-  },
-
-  renderTitle() {
-    return (
-      React.isValidElement(this.props.title) ?
-        this.props.title : <h4 className="modal-title">{this.props.title}</h4>
-    );
+    return this.props.onHide || this.props.onRequestHide;
   },
 
   iosClickHack() {
@@ -255,12 +274,12 @@ const Modal = React.createClass({
       return;
     }
 
-    this.props.onRequestHide();
+    this._getHide()();
   },
 
   handleDocumentKeyUp(e) {
     if (this.props.keyboard && e.keyCode === 27) {
-      this.props.onRequestHide();
+      this._getHide()();
     }
   },
 
@@ -314,5 +333,10 @@ const Modal = React.createClass({
     };
   }
 });
+
+Modal.Body = Body;
+Modal.Header = Header;
+Modal.Title = Title;
+Modal.Footer = Footer;
 
 export default Modal;

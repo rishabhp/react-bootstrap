@@ -1,7 +1,12 @@
 const MyModal = React.createClass({
   render() {
     return (
-      <Modal {...this.props} title='Modal heading' animation={false}>
+      <Modal {...this.props} animation={false}>
+
+        <Modal.Header>
+          <Modal.Title>Modal heading</Modal.Title>
+        </Modal.Header>
+
         <div className='modal-body'>
           <h4>Text in a modal</h4>
           <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
