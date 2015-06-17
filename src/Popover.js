@@ -1,8 +1,9 @@
+/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import classNames from 'classnames';
 import BootstrapMixin from './BootstrapMixin';
 import FadeMixin from './FadeMixin';
-import createPositionedComponent from './utils/createPositionedComponent';
+import Overlay from './Overlay';
 
 const Popover = React.createClass({
 
@@ -67,8 +68,18 @@ const Popover = React.createClass({
   }
 });
 
-const PositionedPopover = createPositionedComponent(Popover);
+const OverlayPopover = React.createClass({
+  render(){
+    return (
+      <Overlay {...this.props}>
+        <Popover {...this.props}>
+          { this.props.children }
+        </Popover>
+      </Overlay>
+    );
+  }
+});
 
-PositionedPopover.PopoverMarkup = Popover;
+OverlayPopover.PopoverMarkup = Popover;
 
-export default PositionedPopover;
+export default OverlayPopover;

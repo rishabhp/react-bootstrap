@@ -54,7 +54,7 @@ function getLeftDelta(left, overlayWidth, container, padding) {
 }
 
 
-function getPosition(target, container) {
+export function getPosition(target, container) {
   const offset = container.tagName === 'BODY' ?
     domUtils.getOffset(target) : domUtils.getPosition(target, container);
 
@@ -65,7 +65,7 @@ function getPosition(target, container) {
   };
 }
 
-function calcOverlayPosition(placement, overlayNode, target, container, padding) {
+export function calcOverlayPosition(placement, overlayNode, target, container, padding) {
   const childOffset = getPosition(target, container);
 
   const overlayHeight = overlayNode.offsetHeight;
@@ -109,78 +109,3 @@ function calcOverlayPosition(placement, overlayNode, target, container, padding)
 
   return {positionLeft, positionTop, arrowOffsetLeft, arrowOffsetTop};
 }
-
-
-let createPositionedComponent = Component => {
-
-  class PositionedComponent extends React.Component {
-
-    constructor(props, context){
-      super(props, context);
-      this.state = {
-        positionLeft: null,
-        positionTop: null,
-        arrowOffsetLeft: null,
-        arrowOffsetTop: null
-      };
-    }
-
-    componentWillMount(){
-      this._needsflush = true;
-    }
-
-    componentWillRecieveProps(){
-      this._needsflush = true;
-    }
-
-    componentDidMount(){
-      if ( !this._needsflush ) { return; }
-      this._needsflush = false;
-      this._updatePosition();
-    }
-    componentDidUpate(){
-      if ( !this._needsflush ) { return; }
-      this._needsflush = false;
-      this._updatePosition();
-    }
-
-    render() {
-      let { container, target, ...props } = this.props;
-
-      return <Component {...this.state} {...props}/>;
-    }
-
-    _updatePosition() {
-      if ( this.props.target == null ){
-        return;
-      }
-
-      let target = React.findDOMNode(this.props.target(this.props));
-      let container = React.findDOMNode(this.props.container) || domUtils.ownerDocument(this).body;
-
-      this.setState(
-        calcOverlayPosition(
-            this.props.placement
-          , React.findDOMNode(this)
-          , target
-          , container
-          , this.props.containerPadding));
-    }
-  }
-
-  PositionedComponent.propTypes = {
-    target:           React.PropTypes.func,
-    container:        CustomPropTypes.mountable,
-    containerPadding: React.PropTypes.number,
-    placement:        React.PropTypes.oneOf(['top', 'right', 'bottom', 'left'])
-  };
-
-  PositionedComponent.defaultProps = {
-    containerPadding: 0,
-    placement:        'right'
-  };
-
-  return PositionedComponent;
-};
-
-export default createPositionedComponent;

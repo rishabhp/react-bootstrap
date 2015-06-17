@@ -4,7 +4,9 @@ import createChainedFunction from './utils/createChainedFunction';
 import createContextWrapper from './utils/createContextWrapper';
 import CustomPropTypes from './utils/CustomPropTypes';
 
-import warning from 'react/lib/warning'; // better option?
+import deprecationWarning from './utils/deprecationWarning';
+import warning from 'react/lib/warning';
+
 /**
  * Check if value one is inside or equal to the of value
  *
@@ -94,26 +96,21 @@ const OverlayTrigger = React.createClass({
   getOverlay(){
     let overlay = this.props.overlay;
 
-    warning(this.props.containerPadding == null && this.props.placement == null,
-      '[react-bootstrap] `containerPadding` and `placement` props are depreciated for OverlayTrigger. ' +
-      'Please add these props directly to your Tooltip or Popover elements');
+    if ( this.props.container != null
+      || this.props.containerPadding != null
+      || this.props.placement != null )
+    {
+      deprecationWarning(
+        'Specifying `container`, `containerPadding` and `placement` OverlayTrigger props',
+        'these props directly to the Tooltip, Popover, or Overlay elements');
+    }
 
-    overlay = cloneElement(overlay, {
+    return cloneElement(overlay, {
       target:    ()=> React.findDOMNode(this),
       placement: overlay.props.placement || this.props.placement,
       container: overlay.props.container || this.props.container,
       containerPadding: overlay.props.containerPadding || this.props.containerPadding
     });
-
-    return (
-      <Portal
-        container={this.props.container}
-        show={this.state.isOverlayShown}
-        onHide={this.hide}
-      >
-        { overlay }
-      </Portal>
-    );
   },
 
   render() {

@@ -1,8 +1,9 @@
+/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import classNames from 'classnames';
 import BootstrapMixin from './BootstrapMixin';
 import FadeMixin from './FadeMixin';
-import createPositionedComponent from './utils/createPositionedComponent';
+import Overlay from './Overlay';
 
 const Tooltip = React.createClass({
   mixins: [BootstrapMixin, FadeMixin],
@@ -61,9 +62,19 @@ const Tooltip = React.createClass({
   }
 });
 
-const PositionedTooltip = createPositionedComponent(Tooltip);
 
+const OverlayTooltip = React.createClass({
+  render(){
+    return (
+      <Overlay {...this.props}>
+        <Tooltip {...this.props}>
+          { this.props.children }
+        </Tooltip>
+      </Overlay>
+    );
+  }
+});
 
-PositionedTooltip.TooltipMarkup = Tooltip;
+OverlayTooltip.TooltipMarkup = Tooltip;
 
-export default PositionedTooltip;
+export default OverlayTooltip;
