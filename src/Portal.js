@@ -1,37 +1,31 @@
 import React from 'react';
-import OverlayMixin from './OverlayMixin';
-import RootCloseWrapper from './RootCloseWrapper';
+import { OverlayMixin } from './OverlayMixin';
+
+let prop = 'hi';
+
+let obj = { prop: ...prop };
 
 let Portal = React.createClass({
 
+  prop: obj,
+
   displayName: 'Portal',
 
+  // we use the mixin for now, to avoid duplicating a bunch of code.
+  // when the deprecation is removed we need to move the logic here from OVerlayMixin
   mixins: [ OverlayMixin ],
 
   propTypes: {
-    show:      React.PropTypes.bool,
-    onHide:    React.PropTypes.func,
-    rootClose: React.PropTypes.bool
+    onRootClose: React.PropTypes.func,
+    rootClose:   React.PropTypes.bool
   },
 
   renderOverlay() {
-    let show = this.props.show;
-
-    if (!this.props.children || !show) {
+    if (!this.props.children) {
       return null;
     }
 
-    let tooltip = React.Children.only(this.props.children);
-
-    if (this.props.rootClose) {
-      return (
-        <RootCloseWrapper onRootClose={this.props.onHide}>
-          { tooltip }
-        </RootCloseWrapper>
-      );
-    } else {
-      return tooltip;
-    }
+    return React.Children.only(this.props.children);
   },
 
   render() {

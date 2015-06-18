@@ -367,8 +367,8 @@ const ModalOverlay = React.createClass({
     // I can't think of another way to not break back compat while defaulting container
     if ( show != null ){
       return (
-        <Portal show={show} container={props.container} >
-          { modal }
+        <Portal container={props.container} >
+          { show && modal }
         </Portal>
       );
     } else {

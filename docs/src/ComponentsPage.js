@@ -251,13 +251,11 @@ const ComponentsPage = React.createClass({
                   <p>Use <code>{'<Modal/>'}</code> in combination with other components to show or hide your Modal.</p>
                   <ReactPlayground codeText={Samples.ModalTrigger} />
 
-                  {/*
                   <h3 id='modals-custom'>Custom trigger</h3>
                   <p>Use <code>OverlayMixin</code> in a custom component to manage the modal's state yourself.</p>
                   <ReactPlayground codeText={Samples.ModalOverlayMixin} />
-                  */}
 
-                  <h3 id='modals-custom'>Contained Modal</h3>
+                  <h3 id='modals-contained'>Contained Modal</h3>
                   <p>You will need to add the following css to your project and ensure that your container has the <code>modal-container</code> class.</p>
                   <pre>
                     {React.DOM.code(null,

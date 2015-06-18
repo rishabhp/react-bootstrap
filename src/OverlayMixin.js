@@ -1,8 +1,9 @@
 import React from 'react';
 import CustomPropTypes from './utils/CustomPropTypes';
 import domUtils from './utils/domUtils';
+import deprecationWarning from './utils/deprecationWarning';
 
-export default {
+export const OverlayMixin = {
   propTypes: {
     container: CustomPropTypes.mountable
   },
@@ -65,5 +66,16 @@ export default {
 
   getContainerDOMNode() {
     return React.findDOMNode(this.props.container) || domUtils.ownerDocument(this).body;
+  }
+};
+
+export default {
+
+  ...OverlayMixin,
+
+  componentWillMount() {
+    deprecationWarning(
+        'Overlay mixin', 'the `<Portal/>` Component'
+      , 'http://react-bootstrap.github.io/components.html#modals-custom');
   }
 };

@@ -2,12 +2,12 @@
 import React from 'react';
 import Portal from './Portal';
 import Position from './Position';
+import RootCloseWrapper from './RootCloseWrapper';
 
 class Overlay extends React.Component {
 
   constructor(props, context){
     super(props, context);
-    this.state = { show: false };
   }
 
   render(){
@@ -16,13 +16,28 @@ class Overlay extends React.Component {
       , containerPadding
       , target
       , placement
+      , rootClose
       , ...props } = this.props;
 
+    let positionedChild = (
+      <Position {...{ container, containerPadding, target, placement }}>
+        { this.props.children }
+      </Position>
+    );
+
+    if (rootClose) {
+      positionedChild = (
+        <RootCloseWrapper onRootClose={this.props.onHide}>
+          { positionedChild }
+        </RootCloseWrapper>
+      );
+    }
+
     return (
-      <Portal show={props.show} container={container}>
-        <Position {...{ container, containerPadding, target, placement }}>
-          { this.props.children }
-        </Position>
+      <Portal container={container} rootClose={rootClose} onRootClose={this.props.onHide}>
+      { props.show &&
+          positionedChild
+      }
       </Portal>
     );
   }
@@ -30,7 +45,10 @@ class Overlay extends React.Component {
 
 Overlay.propTypes = {
   ...Portal.propTypes,
-  ...Position.propTypes
+  ...Position.propTypes,
+  show: React.PropTypes.bool,
+  rootClose: React.PropTypes.bool,
+  onHide: React.PropTypes.func
 };
 
 export default Overlay;
