@@ -1,0 +1,8 @@
+{
+  "plugins": [
+    "react-bootstrap-internal"
+  ],
+  "rules": {
+    "react-bootstrap-internal/lodash-import": 2
+  }
+}
