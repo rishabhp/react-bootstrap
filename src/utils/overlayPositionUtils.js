@@ -1,27 +1,7 @@
-import React from 'react';
 import domUtils from './domUtils';
-import CustomPropTypes from './CustomPropTypes';
-
-function getContainerDimensions(containerNode) {
-  let width, height, scroll;
-
-  if (containerNode.tagName === 'BODY') {
-    width = window.innerWidth;
-    height = window.innerHeight;
-    scroll =
-      domUtils.ownerDocument(containerNode).documentElement.scrollTop ||
-      containerNode.scrollTop;
-  } else {
-    width = containerNode.offsetWidth;
-    height = containerNode.offsetHeight;
-    scroll = containerNode.scrollTop;
-  }
-
-  return {width, height, scroll};
-}
 
 function getTopDelta(top, overlayHeight, container, padding) {
-  const containerDimensions = getContainerDimensions(container);
+  const containerDimensions = utils.getContainerDimensions(container);
   const containerScroll = containerDimensions.scroll;
   const containerHeight = containerDimensions.height;
 
@@ -38,7 +18,7 @@ function getTopDelta(top, overlayHeight, container, padding) {
 }
 
 function getLeftDelta(left, overlayWidth, container, padding) {
-  const containerDimensions = getContainerDimensions(container);
+  const containerDimensions = utils.getContainerDimensions(container);
   const containerWidth = containerDimensions.width;
 
   const leftEdgeOffset = left - padding;
@@ -53,59 +33,81 @@ function getLeftDelta(left, overlayWidth, container, padding) {
   }
 }
 
+const utils = {
 
-export function getPosition(target, container) {
-  const offset = container.tagName === 'BODY' ?
-    domUtils.getOffset(target) : domUtils.getPosition(target, container);
+  getContainerDimensions(containerNode) {
+    let width, height, scroll;
 
-  return {
-    ...offset, // eslint-disable-line object-shorthand
-    height: target.offsetHeight,
-    width: target.offsetWidth
-  };
-}
-
-export function calcOverlayPosition(placement, overlayNode, target, container, padding) {
-  const childOffset = getPosition(target, container);
-
-  const overlayHeight = overlayNode.offsetHeight;
-  const overlayWidth = overlayNode.offsetWidth;
-
-  let positionLeft, positionTop, arrowOffsetLeft, arrowOffsetTop;
-
-  if (placement === 'left' || placement === 'right') {
-    positionTop = childOffset.top + (childOffset.height - overlayHeight) / 2;
-
-    if (placement === 'left') {
-      positionLeft = childOffset.left - overlayWidth;
+    if (containerNode.tagName === 'BODY') {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      scroll =
+        domUtils.ownerDocument(containerNode).documentElement.scrollTop ||
+        containerNode.scrollTop;
     } else {
-      positionLeft = childOffset.left + childOffset.width;
+      width = containerNode.offsetWidth;
+      height = containerNode.offsetHeight;
+      scroll = containerNode.scrollTop;
     }
 
-    const topDelta = getTopDelta(positionTop, overlayHeight, container, padding);
+    return {width, height, scroll};
+  },
 
-    positionTop += topDelta;
-    arrowOffsetTop = 50 * (1 - 2 * topDelta / overlayHeight) + '%';
-    arrowOffsetLeft = null;
+  getPosition(target, container) {
+    const offset = container.tagName === 'BODY' ?
+      domUtils.getOffset(target) : domUtils.getPosition(target, container);
 
-  } else if (placement === 'top' || placement === 'bottom') {
-    positionLeft = childOffset.left + (childOffset.width - overlayWidth) / 2;
+    return {
+      ...offset, // eslint-disable-line object-shorthand
+      height: target.offsetHeight,
+      width: target.offsetWidth
+    };
+  },
 
-    if (placement === 'top') {
-      positionTop = childOffset.top - overlayHeight;
+  calcOverlayPosition(placement, overlayNode, target, container, padding) {
+    const childOffset = utils.getPosition(target, container);
+
+    const overlayHeight = overlayNode.offsetHeight;
+    const overlayWidth = overlayNode.offsetWidth;
+
+    let positionLeft, positionTop, arrowOffsetLeft, arrowOffsetTop;
+
+    if (placement === 'left' || placement === 'right') {
+      positionTop = childOffset.top + (childOffset.height - overlayHeight) / 2;
+
+      if (placement === 'left') {
+        positionLeft = childOffset.left - overlayWidth;
+      } else {
+        positionLeft = childOffset.left + childOffset.width;
+      }
+
+      const topDelta = getTopDelta(positionTop, overlayHeight, container, padding);
+
+      positionTop += topDelta;
+      arrowOffsetTop = 50 * (1 - 2 * topDelta / overlayHeight) + '%';
+      arrowOffsetLeft = null;
+
+    } else if (placement === 'top' || placement === 'bottom') {
+      positionLeft = childOffset.left + (childOffset.width - overlayWidth) / 2;
+
+      if (placement === 'top') {
+        positionTop = childOffset.top - overlayHeight;
+      } else {
+        positionTop = childOffset.top + childOffset.height;
+      }
+
+      const leftDelta = getLeftDelta(positionLeft, overlayWidth, container, padding);
+      positionLeft += leftDelta;
+      arrowOffsetLeft = 50 * (1 - 2 * leftDelta / overlayWidth) + '%';
+      arrowOffsetTop = null;
     } else {
-      positionTop = childOffset.top + childOffset.height;
+      throw new Error(
+        `calcOverlayPosition(): No such placement of "${placement }" found.`
+      );
     }
 
-    const leftDelta = getLeftDelta(positionLeft, overlayWidth, container, padding);
-    positionLeft += leftDelta;
-    arrowOffsetLeft = 50 * (1 - 2 * leftDelta / overlayWidth) + '%';
-    arrowOffsetTop = null;
-  } else {
-    throw new Error(
-      `calcOverlayPosition(): No such placement of "${placement }" found.`
-    );
+    return { positionLeft, positionTop, arrowOffsetLeft, arrowOffsetTop };
   }
+};
 
-  return {positionLeft, positionTop, arrowOffsetLeft, arrowOffsetTop};
-}
+export default utils;
