@@ -106,7 +106,7 @@ ModalTrigger.withContext = createContextWrapper(ModalTrigger, 'modal');
 let DepreciatedModalTrigger = React.createClass({
   componentWillMount(){
     deprecationWarning(
-        'The `ModalTrigger` component', 'Please see the new examples'
+        'The `ModalTrigger` component', 'the `Modal` component directly'
       , 'http://react-bootstrap.github.io/components.html#modals');
   },
 
