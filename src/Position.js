@@ -36,10 +36,19 @@ class PositionedComponent extends React.Component {
 
   render() {
     let { placement, children } = this.props;
-    let positions = this.props.target ? this.state : {};
+    let { positionLeft, positionTop, ...arrows } = this.props.target ? this.state : {};
 
     return cloneElement(
-      React.Children.only(children), positions
+      React.Children.only(children), {
+        ...arrows,
+        positionTop,
+        positionLeft,
+        // style: {
+        //   ...children.props.style,
+        //   left: positionLeft,
+        //   top: positionTop
+        // }
+      }
     );
   }
 

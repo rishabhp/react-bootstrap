@@ -63,18 +63,18 @@ const Tooltip = React.createClass({
 });
 
 
-const OverlayTooltip = React.createClass({
-  render(){
-    return (
-      <Overlay {...this.props}>
-        <Tooltip {...this.props}>
-          { this.props.children }
-        </Tooltip>
-      </Overlay>
-    );
-  }
-});
+// const OverlayTooltip = React.createClass({
+//   render(){
+//     return (
+//       <Overlay {...this.props}>
+//         <Tooltip {...this.props}>
+//           { this.props.children }
+//         </Tooltip>
+//       </Overlay>
+//     );
+//   }
+// });
 
-OverlayTooltip.TooltipMarkup = Tooltip;
+// OverlayTooltip.TooltipMarkup = Tooltip;
 
-export default OverlayTooltip;
+export default Tooltip;

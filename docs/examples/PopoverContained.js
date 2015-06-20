@@ -13,16 +13,18 @@ class Example extends React.Component {
         >
           Holy guacamole!
         </Button>
-        <Popover
+
+        <Overlay>
           show={this.state.show}
           target={()=> React.findDOMNode(this.state.target)}
           placement='bottom'
           container={mountNode}
           containerPadding={20}
-          title='Popover bottom'
         >
-          <strong>Holy guacamole!</strong> Check this info.
-        </Popover>
+          <Popover title='Popover bottom'>
+            <strong>Holy guacamole!</strong> Check this info.
+          </Popover>
+        </Overlay>
       </ButtonToolbar>
     );
   }

@@ -1,8 +1,10 @@
 import React, { cloneElement } from 'react';
-import Portal from './Portal';
+
 import createChainedFunction from './utils/createChainedFunction';
 import createContextWrapper from './utils/createContextWrapper';
 import CustomPropTypes from './utils/CustomPropTypes';
+import Overlay from './Overlay';
+import position from './utils/overlayPositionUtils';
 
 import deprecationWarning from './utils/deprecationWarning';
 import warning from 'react/lib/warning';
@@ -94,23 +96,31 @@ const OverlayTrigger = React.createClass({
   },
 
   getOverlay(){
-    let overlay = this.props.overlay;
-
-    if ( this.props.container != null
-      || this.props.containerPadding != null
-      || this.props.placement != null )
-    {
-      deprecationWarning(
-        'Specifying `container`, `containerPadding` and `placement` OverlayTrigger props',
-        'these props directly to the Tooltip, Popover, or Overlay elements');
-    }
-
-    return cloneElement(overlay, {
+    let props = {
       target:    ()=> React.findDOMNode(this),
-      placement: overlay.props.placement || this.props.placement,
-      container: overlay.props.container || this.props.container,
-      containerPadding: overlay.props.containerPadding || this.props.containerPadding
+      placement: this.props.placement,
+      container: this.props.container,
+      containerPadding: this.props.containerPadding
+    };
+
+    let overlay = cloneElement(this.props.overlay, {
+      placement: props.placement,
+      container: props.container
     });
+    // if ( this.props.container != null
+    //   || this.props.containerPadding != null
+    //   || this.props.placement != null )
+    // {
+    //   deprecationWarning(
+    //     'Specifying `container`, `containerPadding` and `placement` OverlayTrigger props',
+    //     'these props directly to the Tooltip, Popover, or Overlay elements');
+    // }
+
+    return (
+      <Overlay {...props}>
+        { overlay }
+      </Overlay>
+    );
   },
 
   render() {
@@ -142,6 +152,9 @@ const OverlayTrigger = React.createClass({
         props.onFocus = createChainedFunction(this.handleDelayedShow, this.props.onFocus);
         props.onBlur = createChainedFunction(this.handleDelayedHide, this.props.onBlur);
       }
+    }
+    else {
+      deprecationWarning('"manual" trigger types', ' the Overlay component directly')
     }
 
     return cloneElement(
@@ -190,6 +203,32 @@ const OverlayTrigger = React.createClass({
       this._hoverDelay = null;
       this.hide();
     }, delay);
+  },
+
+  // deprecated Methods
+  calcOverlayPosition() {
+    let overlay = this.props.overlay;
+
+    deprecationWarning('OverlayTrigger.calcOverlayPosition()', 'utils/overlayPositionUtils');
+
+    return position.calcOverlayPosition(
+        overlay.props.placement || this.props.placement
+      , React.findDOMNode(overlay)
+      , React.findDOMNode(this)
+      , React.findDOMNode(overlay.props.container || this.props.container)
+      , overlay.props.containerPadding || this.props.containerPadding
+    );
+  },
+
+  getPosition() {
+    deprecationWarning('OverlayTrigger.getPosition()', 'utils/overlayPositionUtils');
+
+    let overlay = this.props.overlay;
+
+    return position.getPosition(
+        React.findDOMNode(this)
+      , React.findDOMNode(overlay.props.container || this.props.container)
+    );
   }
 
 });

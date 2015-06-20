@@ -68,18 +68,18 @@ const Popover = React.createClass({
   }
 });
 
-const OverlayPopover = React.createClass({
-  render(){
-    return (
-      <Overlay {...this.props}>
-        <Popover {...this.props}>
-          { this.props.children }
-        </Popover>
-      </Overlay>
-    );
-  }
-});
+// const OverlayPopover = React.createClass({
+//   render(){
+//     return (
+//       <Overlay {...this.props}>
+//         <Popover {...this.props}>
+//           { this.props.children }
+//         </Popover>
+//       </Overlay>
+//     );
+//   }
+// });
 
-OverlayPopover.PopoverMarkup = Popover;
+// OverlayPopover.PopoverMarkup = Popover;
 
-export default OverlayPopover;
+export default Popover;

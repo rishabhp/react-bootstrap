@@ -130,8 +130,8 @@ describe('OverlayTrigger', function() {
             <OverlayTrigger
               overlay={<div>test</div>}
               trigger='click' rootClose={testCase.rootClose}
-              >
-              <button>button</button>
+            >
+            <button>button</button>
             </OverlayTrigger>
           );
           const overlayTrigger = React.findDOMNode(instance);
